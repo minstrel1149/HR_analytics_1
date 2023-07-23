@@ -25,7 +25,7 @@ def feature_classification(df, classify='character', return_dataframe=False):
 
 def astype_category(df):
     astype_category = ['Attrition', 'BusinessTravel', 'Department', 'Education', 'EducationField', 'EnvironmentSatisfaction',
-                   'Gender', 'JobRole', 'MaritalStatus', 'OverTime']
+                   'Experienced', 'Gender', 'JobRole', 'MaritalStatus', 'OverTime']
     astype_dict = dict.fromkeys(astype_category, 'category')
     df = df.astype(astype_dict)
     return df
