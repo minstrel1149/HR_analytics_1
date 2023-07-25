@@ -1,5 +1,35 @@
 # HR Analytics - IBM HR Data
 
+### Analysis Process
+1. EDA 진행
+    - 각 Feature별 datatype, nunique등 파악
+    - Rank scale 성격의 variables의 경우 모델링의 편의를 위해 Ratio scale로 가정
+    - EDA 진행하면서 일정 부분 실제 Data가 아닌 Randomized Data임을 확인
+        - 불필요 Feature 삭제 : DailyRate, MonthlyRate 등 → MonthlyIncome만 남겨두는 형태
+    - Continuous Features의 경우 kdeplot을 통해 분포 확인
+    - Discrete Features의 경우 categorical로 astype하여 One-hot Encoding에 활용
+    - 가공 Variables 추가 : 잦은 이직여부를 확인하는 Feature 등
+2. 예측 정확도 등의 Baseline 설정
+    - 별도의 Feature 전처리 없이 가볍게 확인
+    - Baseline에서는 분석이 수반되지 않을 예정이므로 RandomForest를 주로 활용하여 Baseline 설정
+    - Roc auc score 및 Confusion matrix 확인
+    - 참고 차 Tree 모델을 이용한 Feature importance 확인 → 주로 어떤 사항이 Attrition에 영향을 미치는지
+3. Factor Analysis 진행
+    - Factor Analysis를 통해 대략적인 경향성을 파악
+    - 단 roc_auc_score가 높지 않으므로 이후 다른 파일에서 각 Feature들을 세부적으로 뜯어서 분석
+    - 전체 Variance의 60%가 넘도록 Factor의 수 설정
+    - Factor loadings 확인 후 각 Feature들을 Factor에 배치 → Factor naming 진행
+    - Factor loadings의 idxmax가 높지 않은 Feature들을 제거
+    - 세부 분석을 위해 Logistic Regression 활용하여 모델링 진행
+        - Roc auc score 및 Confusion matrix 확인 → RandomForest 모델과 비교
+        - Coefficient 확인을 통하여 Attrition에 영향을 주는 요소 파악
+        - Feature가 많지 않으므로 각 Feature에 대한 Significance Test 진행 → p_value 확인
+            - statsmodel 라이브러리를 통한 재모델링 및 Coefficient 비교
+    - 소결
+        - 일정 부분 Randomized Data이므로 Factor Analysis의 효과가 크지는 않음
+        - 대략적인 참고용으로만 확인
+
+
 ### Original Data Dictionary
 * Age : 해당 직원의 나이
 * Attrition : 퇴직 여부
