@@ -28,7 +28,53 @@
     - 소결
         - 일정 부분 Randomized Data이므로 Factor Analysis의 효과가 크지는 않음
         - 대략적인 참고용으로만 확인
+4. 세부 모델링 진행
+    - PolynomialFeatures를 통한 Feature 확장(interaction_only=True로 설정)
+        - Feature들이 Multicolinearity를 가질 수 밖에 없으므로, 연결된 요소 파악하기 위한 방안
+    - 세부 분석을 위해 Logistic Regression 활용하여 모델링 진행
+        - Feature 확장으로 인해 Feature가 많아진 부분 고려 → L1 Regularization 수행
+        - 영향을 주는 Feature들의 수를 줄이기 위해 Regularization 강화
+        - Baseline보다 더 높은 Roc auc score 획득 → cutoff 조정에 활용
+    - Confusion matrix 확인 및 cutoff 조정(0.65)
+        - 최대한 Accuracy가 유지되는 선에서 Attrition 할 것이란 예측을 극대화
+    - 일정 수준 이상 영향을 주는 Coefficient 확인 및 주요 영향 내용 정리
+        - negative 영향(Attrition X) : Age-JobInvolvement / HighWLB
+        - positive 영향(Attrition O) : LowEnvSatis-FreqMove / FreqMove-LowWLB / FreqMove-Sales / Single-LowWLB
+5. 재직인원 Attrition 예상자 Clustering 진행
+    - 거리 기반 Clustering(K-Means, Ward method 등)을 진행할 예정이므로 StandardScaler 필수 진행
+        - Scaler의 학습은 전체 Dataset을 대상으로 진행 → 전체 대비 Attrition 예상자의 수치 파악
+    - 세부 모델링에서 나온 Coefficient 기반으로 유의미한 Feature들만 추출하여 Feature 확인
+    - 모델링한 Feature들에 대하여 좀 더 손쉬운 파악을 위해 Factor analysis 적용
+        - Variance 설명량이 80%가 넘도록 Factor의 수 설정
+        - 각 Factor들 Naming으로 이해 용이하도록 조치
+    - K-Means, Hierachical Clustering(Ward method)를 바탕으로 Cluster 확인
+        - Elbow, Calinski-Harabasz, Dendrogram 고려 후 Hierachical Clustering 선택
+        - 예측된 Cluster들을 Factor Analysis 완료된 DataFrame에 할당
+    - Clustering 자료 분석 결과 정리
+        - Cluster 1 : Age, JobInvolvement, WLB 등에 문제가 생긴 케이스
+        - Cluster 2 : 기존 이직이 잦았으며, 업무환경에 대하여 불만족한 케이스
+        - Cluster 3 : Technician 쪽에서 OverTime이 잦은 케이스
+        - Cluster 4 : Sales 쪽에서 기존 이직이 잦았으며, 워라밸이 안좋은 케이스
+        - Cluster 5 : 기존 이직이 잦았으며 OverTime이 많은 남자 케이스. Age와 JobInvolvement는 괜찮은 것이 특징
+        - Cluster 6 : 현재 데이터로는 이유를 크게 알 수 없는 케이스 → 추가적인 세부 분석 필요
+            - Age, JobInvolvement도 준수하고, WLB도 나쁘지 않은 정도 → Single이면서 개인 사유일 가능성?
+        - Cluster 7 : 현재 데이터로는 이유를 크게 알 수 없는 케이스 → 추가적인 세부 분석 필요
+            - 다만 한 회사에서 오래 일한거에 비해 JobLevel이 좀 낮은 경향성
+        - Cluster 8 : 현재 Manager와 같이 일을 많이 한 케이스. 이유 파악을 위해서는 세부적으로 확인 필요
 
+### 고려할 점/느낀 점
+* 일정 부분 Randomized된 Data이므로, 예측이 아닌 세부 분석에 있어서는 다소간 부정확한 부분 존재
+    - 실제 Data를 활용할 시 훨씬 더 정확/정교하게 분석이 가능할 것으로 예상
+* 퇴직 예상자에 대한 Clustering 진행 시, 확장된 Feature를 활용하기보다는 원본 Data의 Feature를 활용하는 것이 좀 더 효과적일듯
+* Factor Analysis는 세부 내용 분석에 많은 기여 → HR 도메인 지식 바탕으로 적극적으로 활용 필요
+* (중요!) 퇴직 분석의 경우 대상자의 기간을 두고 Train Dataset을 구성하는 것이 필요
+    - 중요한 점은 결국 내부 대상자 중에 어떤 그룹이 퇴직할 것인가를 파악하는 것
+    - 단순히 전체 데이터를 Random으로 Train dataset과 Test dataset으로 배치하면 분석에 좀 더 어려움을 겪을 가능성
+    - 예시 : Train dataset → 5년 이상 재직자 + 전체 퇴직자 / Test dataset → 5년 이하 재직자
+        - 이렇게 활용하면 5년 이하 재직자 중 회사를 오래 다닐 가능성이 낮은 인원들을 파악 가능
+        - 해당 인원들이 어떠한 이유로 보통 퇴사를 선택하게 되는지 세부 분석 가능
+        - 기간은 각 회사의 상황에 맞게 유동적으로 설정 가능
+* 결론 : HR Data Analysis의 의미를 찾기 위해서는 HR 도메인 지식과 Data Analytics의 지식이 모두 필요
 
 ### Original Data Dictionary
 * Age : 해당 직원의 나이
