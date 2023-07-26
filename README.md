@@ -51,16 +51,13 @@
         - Elbow, Calinski-Harabasz, Dendrogram 고려 후 Hierachical Clustering 선택
         - 예측된 Cluster들을 Factor Analysis 완료된 DataFrame에 할당
     - Clustering 자료 분석 결과 정리
-        - Cluster 1 : Age, JobInvolvement, WLB 등에 문제가 생긴 케이스
-        - Cluster 2 : 기존 이직이 잦았으며, 업무환경에 대하여 불만족한 케이스
-        - Cluster 3 : Technician 쪽에서 OverTime이 잦은 케이스
-        - Cluster 4 : Sales 쪽에서 기존 이직이 잦았으며, 워라밸이 안좋은 케이스
-        - Cluster 5 : 기존 이직이 잦았으며 OverTime이 많은 남자 케이스. Age와 JobInvolvement는 괜찮은 것이 특징
-        - Cluster 6 : 현재 데이터로는 이유를 크게 알 수 없는 케이스 → 추가적인 세부 분석 필요
-            - Age, JobInvolvement도 준수하고, WLB도 나쁘지 않은 정도 → Single이면서 개인 사유일 가능성?
-        - Cluster 7 : 현재 데이터로는 이유를 크게 알 수 없는 케이스 → 추가적인 세부 분석 필요
-            - 다만 한 회사에서 오래 일한거에 비해 JobLevel이 좀 낮은 경향성
-        - Cluster 8 : 현재 Manager와 같이 일을 많이 한 케이스. 이유 파악을 위해서는 세부적으로 확인 필요
+        - cluster 0 : Age, JobInvolvement, WLB 등에 문제가 생긴 케이스
+        - cluster 1 : 세부 조사가 필요한 다양한 이유(단, 기존 재직 회사가 많지 않은 편)
+        - cluster 2 : Age, JobInvolvement가 강함에도 다양한 문제가 생긴 케이스
+        - cluster 3 : Performance가 떨어지는 케이스
+        - cluster 4 : Technician 쪽에서 OverTime이 잦은 케이스
+        - cluster 5 : 최근 승진이 오래된 케이스
+        - cluster 6 : Sales 쪽에서 이직이 잦았으며, 워라밸이 안좋은 케이스
 
 ### 고려할 점/느낀 점
 * 일정 부분 Randomized된 Data이므로, 예측이 아닌 세부 분석에 있어서는 다소간 부정확한 부분 존재
