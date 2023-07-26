@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 
 def add_experience(df):
-    df = df.assign(Experienced=lambda df: np.where(df['NumCompaniesWorked'] == 0, 'NewEmp',
-                                                   np.where((df['TotalWorkingYears'] - df['YearsAtCompany']) / df['NumCompaniesWorked'] <= 1,
-                                                            'FreqMove', 'ExpEmp')))
+    df = df.assign(Experienced=lambda df: np.where(df['NumCompaniesWorked'] == 0, 'NewEmp', 
+                                              np.where(df['NumCompaniesWorked'] <= 2, 'ExpEmp',
+                                              np.where((df['TotalWorkingYears'] - df['YearsAtCompany']) / df['NumCompaniesWorked'] <= 1, 'FreqMove', 'ExpEmp'))))
     return df
 
 def feature_classification(df, classify='character', return_dataframe=False):
